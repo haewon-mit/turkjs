@@ -1,1 +1,0 @@
-avconv -i characters.avi -c:v libx264 -crf 28 -c:a aac -b:a 256k -strict experimental characters.mp4
