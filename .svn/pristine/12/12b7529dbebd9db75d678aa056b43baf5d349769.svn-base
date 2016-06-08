@@ -1,0 +1,311 @@
+<!DOCTYPE html> 
+<html> 
+<head>
+<style type="text/css">
+.slide {
+	width: 420px;
+    background: white;
+}
+.slide-back {
+    position:absolute;
+    height:100%;
+}
+
+span.normal {
+}
+span.highlighted {
+	color:red;
+	background:rgb(200,255,200);;
+}
+span.over {
+	color:darkgray;
+}
+</style>
+
+<title>Tell a Story!</title>
+<link rel="stylesheet" href="./jquery-ui.css" />
+<script src="./jquery-1.9.1.js"></script>
+<script src="./jquery-ui.js"></script>
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+<center>
+	<h1> Now indicate where a sentence belongs. <br /> <br />
+	 Instructions: </h1>
+	<div style="vertical-align:top;border: 2px dotted; border-radius:10px; width: 50%; text-align:left; font-size: 175%">
+	
+	<ul>
+	<li>Indicate which sentence you mean by clicking on a sentence on the right. Use the slider under the video to indicate the beginning and end of that segment.
+		<ul>
+		    <li>Move the slider to the appropriate point in the video and click "Start Mark "and "End Mark" to indicated the start and end of the sentence.
+		</ul>
+	<li>If the sentence does not pertain to a moment in time in the video, then there is no need to indicate where it goes.
+	<li> If you make a mistake for a particular sentence, you can reset it by clicking on the sentence and clicking "Reset Mark" to clear the markers.
+	</ul>
+	
+	</div>
+	
+<table>
+<tr>
+<td>
+
+<div s> 
+  <br> 
+  <video id="video1" width="420" autoplay="0" ontimeupdate="getFrameNum()">
+    <source src="./hs2.mp4" type="video/mp4">
+    Your browser does not support HTML5 video.
+  </video>
+</div>
+
+
+  <table width="420">
+    <tr width="100%">
+      <td>  <img id="playwidget" src="./pause1-150x150.png" onclick="playPause()" width="13" height="13" /> </td>
+      <td> <div id="slide1" class="slide" width="100%"></div> </td>
+    </tr>
+  </table>
+
+  <p>
+  <button onclick="startMark()">Start Mark</button>
+  <label for="amount">Time Step:</label>
+  <input type="text" id="amount" width="60px" style="border: 0; color: #f6931f; font-weight: bold; width:" />
+  <button onclick="endMark()">End Mark</button>
+  </p>
+  <center>
+  <button onclick="resetMark()">Reset Mark</button>
+  </center>
+</td>
+
+<td style="vertical-align:top;border: 2px solid; border-radius:10px;padding:20px 25px; font-size:150%" width="65%" id="textblock">
+<div id="innerblock">
+<span class="normal">This is a sentence of not attended to. </span>
+<span class="highlighted">This is a sentence attended to.</span>
+<span class="over">This is a sentence mouse-overed.</span>
+</div>
+</td>
+</tr>
+</table>
+<br/>
+<!-- http://www.google.com -->
+<h1><a href="#foo" onclick="submitData()" id="exitref">Finished</a></h1>
+</center>
+<script> 
+
+var isMarking = false;
+var markFinished = false;
+var start = 0;
+var end = 0;
+var dataout = [];
+var myVideo=document.getElementById("video1"); 
+//var tid = setInterval(getFrameNum, 1000/20);
+var tid2 = setTimeout(init, 200);
+var seled = "";
+
+function serializedataout() {
+	var tout = {};
+	for(var i = 0;i < dataout.length;i++) {
+		tout[i] = dataout[i];
+	}
+	tout["id"] = getParameterByName("assignID");
+	tout["alignedstory"] = true;
+	return tout;
+}
+
+function submitData() {
+	console.log('Clicked finished');
+	$.ajax({
+		type: "POST",
+		url: "story",
+		data: serializedataout(),
+		success: function(data){
+			console.log("Received: " + data['status']); // John
+		},
+		async: false,
+		dataType: "json"
+	});
+}
+
+function doUpdate(event, ui) {
+	var bg = '#ddd';
+	$('#slide1 .slide-back').remove();
+	
+	if(isMarking) {
+		
+		var ind = parseInt(seled.substring(1));
+		dataout[ind] = [start, end];
+
+		if(!markFinished) 
+			end = gethandleMark();   
+		
+	}
+	if(seled.length != 0)
+		$('#slide1').append($('<div></div>').addClass('slide-back').width(end -start).css('background', bg).css('left', start));
+}
+
+$(function() {
+	$(document).ready(function() {
+	
+	$('#slide1').slider({
+		slide: seek,
+		change: doUpdate,
+		min: 0,
+		max: 100,
+		values: 0
+	});
+
+    	doUpdate();
+
+	});
+//	$( "#exitref").attr("href", "http://workersandbox.mturk.com/mturk/externalSubmit?job=true&assignmentId=" + getParameterByName("assignID"));
+	$( "#exitref").attr("href", "http://www.mturk.com/mturk/externalSubmit?jobid="+getParameterByName("assignID")+"&assignmentId=" + getParameterByName("assignID"));
+    $( "#amount" ).val( "0.0");
+    loadText();
+});
+
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function loadText() {
+	var myJSONObject = {"id": getParameterByName('assignID')};
+	$.ajax({
+		type: "POST",
+		url: "story",
+		data: myJSONObject,
+		success: function(data){
+			if(data['status'] != 500) {
+				var chunkedat = eval(data['chunked']);
+				$('#innerblock').remove();
+				$('#textblock').append('<div id="innerblock"></div>');
+				dataout = [];
+				for(var i = 0;i < chunkedat.length;i++) {
+					var itsname = "s"+i;
+					$('#innerblock').append('<span class="normal" onMouseOver="onmover(\''+itsname+'\')" '+
+						'onmouseout="onmovout(\''+itsname+'\')" ' +
+						'onclick="alignsel(\''+itsname+'\')" ' +
+						'id="'+itsname+'">'+chunkedat[i]+'</span>  ');
+					dataout[i] = true;
+				}
+			
+			
+				console.log("Received: " + chunkedat.length); // John
+				success = true;
+			}
+		},
+		async: false,
+		dataType: "json"
+	});
+}
+
+function updatemarkers() {
+	if(seled.length != 0) {
+		var ind = parseInt(seled.substring(1));
+		if((typeof dataout[ind]) == "boolean")
+			resetmarkers();
+		else {
+			var rangemark = dataout[ind];
+			start = rangemark[0];
+			end = rangemark[1];
+		}
+	} else 
+		resetmarkers();
+	doUpdate();
+}
+
+function resetmarkers() {
+	start=end = 0;
+}
+
+
+function alignsel(elename) {
+	if(seled != elename) {
+		//context switch
+		$('#'+seled).attr('class', 'normal');
+		$('#'+elename).attr('class', 'highlighted');
+		seled = elename;
+		isMarking = false;
+		markFinished = true;
+		updatemarkers();
+	}
+	
+}
+
+function onmover(elename) {
+	if(seled.length == 0 || seled != elename)
+		$('#'+elename).attr('class', 'over');
+}
+
+function onmovout(elename) {
+	if(seled.length == 0 || seled != elename)
+		$('#'+elename).attr('class', 'normal');
+}
+
+function getFrameNum() {
+  var t = Math.floor(myVideo.currentTime *20)
+  $( "#amount" ).val( "" + t);
+  $( "#slide1" ).slider( "value", t );
+}
+function abortTimer() { // to be called when you want to stop the timer
+  clearInterval(tid);
+}
+function init() {
+  var dur = Math.floor(myVideo.duration*20);
+  console.log("hello" + dur);
+  $( "#slide1" ).slider( "option", "max",  dur);
+  $( "#slide1" ).slider( "enable" );
+};
+
+function seek(event, ui) {
+	var vl_frac = $( "#slide1" ).slider( "value" ) / $( "#slide1" ).slider( "option", "max" );
+	var vid_dur = myVideo.duration; // in secs
+	var timePos = vl_frac*vid_dur;
+	//set video position
+	myVideo.currentTime = timePos;
+	doUpdate();
+}
+
+function gethandleMark() {
+	return 420*myVideo.currentTime/myVideo.duration;
+}
+
+function playPause()
+{
+  if (myVideo.paused) {
+    myVideo.play(); 
+    document.getElementById("playwidget").src=./pause1-150x150.png";
+  } else {
+    myVideo.pause(); 
+    document.getElementById("playwidget").src="./play1-150x150.png";
+  }
+} 
+
+
+function startMark() {
+	if(seled.length != 0) {
+		isMarking = true;
+		markFinished = false;
+		end = start = gethandleMark();
+	}
+}
+
+function endMark() {
+	if(seled.length != 0) {
+		markFinished = true;
+		end = gethandleMark();
+	}
+}
+
+function resetMark() {
+	isMarking = false;
+	markFinished = false;
+	var ind = parseInt(seled.substring(1));
+	dataout[ind] = true;
+	start = end = 0;
+	doUpdate();
+}
+</script> 
+</body> 
+</html>

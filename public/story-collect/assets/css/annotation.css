@@ -1,0 +1,23 @@
+.slide {
+    width: 420px;
+    background: white;
+}
+.slide-back {
+    position:absolute;
+    height:100%;
+}
+
+span.normal {
+
+}
+
+span.highlighted {
+    color:red;
+    background:rgb(200,255,200);;
+}
+span.over {
+    color:darkgray;
+}
+#innerblock {
+    display: inline-block;
+}

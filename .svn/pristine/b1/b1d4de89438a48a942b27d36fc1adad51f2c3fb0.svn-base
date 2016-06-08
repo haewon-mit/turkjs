@@ -1,0 +1,134 @@
+<html>
+    <head>
+        <title>The Tangram Game - ADMIN Interface</title>
+        <style>
+            body {
+                background: #333;
+                color: #fff;
+                font: 300 100.1% "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
+            }
+            #canvas_container {
+                width: 800px;
+                border: 1px solid #aaa;
+                margin-right: 300px;
+                margin-left: 50px;
+                margin-top: 50px;
+                height: 1000px;
+            }
+        </style>
+
+        <!-- Graphics and coding dependancies -->
+        <script type="text/javascript" src="./raphael-min.js"></script>
+        <script type="text/javascript" src="./jquery-1.9.1.js"></script>
+        <script type="text/javascript" src="./jquery-ui.js"></script>
+
+        <!-- Define the types and the network layer -->
+        <script type="text/javascript" src="./shapes_colors_def.js"></script>
+        <script type="text/javascript" src="./skybox_network.js"></script>
+
+        <!-- UI defs for mouse -->
+        <script type="text/javascript" src="./mouse_defs.js"></script>
+
+        <script type="text/javascript" src="./admin.js"></script>
+
+        <!-- Define some global styles -->
+        <link rel="stylesheet" href="./jquery-ui.css">
+        <link rel="stylesheet" href="./style.css">
+
+        <!-- local code for mouse/HTML interfacing -->
+        <script type="text/javascript">
+            var cur_version = 1.0
+            var available_functions = {};
+	    var admin_host = global_name+"8081/";
+            window.onload = function() {
+		// Initialize Raphael
+        	window.paper = new Raphael(
+		    document.getElementById('canvas_container'), 1200, 1000);
+
+		$.post(admin_host+"get_services", {}, function( data ) {
+		    available_functions = JSON.parse(data);
+		}, "json");
+		var id = setInterval(function() {
+		    call_func("list-rooms", null, function(data) {
+			list_games_handler("roomslist", data)
+		    });
+		}, 10000);
+		
+		call_func("get-recorded-sessions", null, function (data) {
+		    list_games_handler("savedList", data)
+		});
+	    }
+	    
+	    function call_func(name, params, handler) {
+		$.post(admin_host+"room_dyn_config",
+	           {f: available_functions[name], p: params}, handler, "json");
+	    }
+
+	    function list_games_handler(roomName, rooms_list) {
+		var room;
+
+		while ($("#"+roomName).options.length) {
+		    $("#"+roomName).remove(0);
+		}
+		if (rooms_list) {
+		    var i = 0;
+		    for (room in rooms_list) {
+			var roomo = new Option(cars[i],i);
+			i = i + 1;
+			$("#"+roomName).options.add(roomo);
+		    }
+		}
+	    }
+
+
+            function call_init() {
+                 console.log("INIT!");
+	         $.post("http://localhost:8080/callinit",
+	                        {}, function (data) {
+                                        console.log("successfully called");
+                                    }, "json");
+            }
+	</script>
+    </head>
+    <body>
+    	<table cols=2 rows=1>
+	  <tr> <td> <center> <button id="init-collection" onclick="call_init()">Init Game </button> </center></td> </tr>
+          <tr>
+		<td width=1500px>
+		    <center>
+			View: <br />
+		    <select>
+			<option value="Room">Room</option>
+			<option value="Saved">Saved</option>
+		    </select><br />
+
+		    <div width=1500px id="canvas_container"></div>
+		    </center>
+		</td>
+		<!--<td><div id="canvas_container2"></div></td>-->
+		<td width=300px>
+		    Saved Games: <br />
+		    <select width="100%" id="savedList">
+		    </select><button>View</button> <br />
+		    <input width="100px" value=""/><button>Rename</button><br />
+		    Connected Rooms: <br />
+		    <select size=4 width="100%" id="roomslist">
+
+		    </select><button>View</button><br />
+		    <button>Clear Room</button> <br />
+		    <button>Save Ongoing Data</button> <br />
+		    Clients Connected: <br />
+		    <select size=2 width=100%>
+		    </select> <br />
+		    <button>Kick Client</button>
+		    <br />
+		    <hr />
+		    <button>Playback Saved to Room</button>
+
+		</td>
+	    </tr>
+	</table>
+
+
+    </body>
+</html>

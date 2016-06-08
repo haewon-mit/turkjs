@@ -1,0 +1,110 @@
+<html>
+    <head>
+        <title>The Tangram Game - ADMIN Interface</title>
+        <style>
+            body {
+                background: #333;
+                color: #fff;
+                font: 300 100.1% "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
+            }
+            #canvas_container {
+                width: 800px;
+                border: 1px solid #aaa;
+                margin-right: 300px;
+                margin-left: 50px;
+                margin-top: 50px;
+                height: 1000px;
+            }
+        </style>
+
+        <!-- Graphics and coding dependancies -->
+        <script type="text/javascript" src="./raphael-min.js"></script>
+        <script type="text/javascript" src="./jquery-1.9.1.js"></script>
+        <script type="text/javascript" src="./jquery-ui.js"></script>
+
+        <!-- Define the types and the network layer -->
+        <script type="text/javascript" src="./shapes_colors_def.js"></script>
+        <script type="text/javascript" src="./skybox_network.js"></script>
+
+        <!-- UI defs for mouse -->
+        <script type="text/javascript" src="./mouse_defs.js"></script>
+
+        <!-- Define some global styles -->
+        <link rel="stylesheet" href="./jquery-ui.css">
+        <link rel="stylesheet" href="./style.css">
+
+        <!-- local code for mouse/HTML interfacing -->
+        <script type="text/javascript">
+            var cur_version = 1.0
+            var available_functions = {};
+	    	var admin_host = global_name+"8081/";
+        	
+		$.post(admin_host+"get_services", {}, function( data ) {
+		    available_functions = JSON.parse(data);
+		}, "json");
+
+		var id = setInterval(function() {
+		    call_func("list-rooms", null, list_rooms_handler);
+		}, 10000);
+	    
+
+	    function call_func(name, params, handler) {
+			$.post(admin_host+"room_dyn_config",
+	           {f: available_functions[name], p: params}, handler, "json");
+	    }
+
+	    function list_rooms_handler(rooms_list) {
+			var room;
+
+			while ($("#roomslist").options.length) {
+		   		 $("#roomslist").remove(0);
+			}
+			if (rooms_list) {
+		    	var i = 0;
+		    	for (room in rooms_list) {
+					var roomo = new Option(cars[i],i);
+					i = i + 1;
+					$("#roomslist").options.add(roomo);
+		    	}
+			}
+	    }
+
+        $(function() {
+	       var group1num = Math.floor((Math.random() * 2));
+	       var group3num = Math.floor((Math.random() * 2));
+
+	       $("#group1num").text(group1num);
+		  $("#group3num").text(group3num);
+        });
+
+        function call_init() {
+            console.log("INIT!");
+	        $.post("http://localhost:8080/callinit",
+	                  {}, function (data) {
+        	                  console.log("successfully called");
+                          }, "json");
+        }
+	</script>
+    </head>
+    <body>
+    <center>
+    	Study 1 Group : <span id="group1num">5</span> <br/>
+    	Study 3 Group : <span id="group3num">2</span> <br/> 
+
+    	<br /> <br /> <br />
+    	Game one
+    	<hr />
+    	<button id="init-collection" onclick="call_init()">Init Game</button>  <br /> <br /> <br />
+    	
+
+    	Game two
+    	<hr />
+    	<button id="init-collection" onclick="call_init()">Init Game</button>  <br /> <br /> <br />
+
+		Game three
+    	<hr />
+    	<button id="init-collection" onclick="call_init()">Init Game</button>  <br />
+
+    </center>
+    </body>
+</html>

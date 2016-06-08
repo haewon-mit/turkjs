@@ -1,0 +1,131 @@
+<html>
+<head>
+<title>Status</title>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+
+</head>
+
+<body>
+
+<center> <h1> Experiments Running</h1> </center>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#statustab').DataTable( {
+//"ajax": "http://127.0.0.1:8080/status",
+        "ajax": "https://nimbus.media.mit.edu/servlets/engage-1.0-SNAPSHOT-standalone/status",
+    } );
+} );
+
+function checksandbox() {
+  $("body").css('background-color', 'DarkKhaki')
+  $.ajax({
+    "url": "https://nimbus.media.mit.edu/servlets/engage-1.0-SNAPSHOT-standalone/sandbox",
+    "complete": function(datin, status) {
+      if(datin.statusText === "OK") {
+        console.log("Dat: " + datin.responseText);
+        if(datin.responseText === "1")
+          $("body").css('background-color', 'LightCoral');
+        else
+          $("body").css('background-color', 'LightGreen');
+      }
+    }
+  } );
+}
+checksandbox();
+
+
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+</script>
+
+<table id="statustab" class="display" cellspacing="0" width="70%" align="center">
+  <thead>
+    <tr>
+      <th>Hash ID</th>
+      <th>Movie</th>
+      <th>HIT ID</th>
+      <th>Experiment</th>
+      <th>Is Done?</th>
+      <th>Budget</th>
+      <th>Maximum # Participants</th>
+      <th>Time Budget (in Hours)</th>
+      <th>Particpants / Iteration</th>
+      <th>Current Iteration</th>
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <th>Hash ID</th>
+      <th>Movie</th>
+      <th>HIT ID</th>
+      <th>Experiment</th>
+      <th>Is Done?</th>
+      <th>Budget</th>
+      <th>Maximum # Participants</th>
+      <th>Time Budget (in Hours)</th>
+      <th>Particpants / Iteration</th>
+      <th>Current Iteration</th>
+    </tr>
+  </tfoot>
+</table>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<div id="admin">
+<h1> Start an experiment? </h1>
+<!-- <form id="start" action="http://127.0.0.1:8080/start" method="post"> -->
+<form id="start" action="http://nimbus.media.mit.edu/servlets/engage-1.0-SNAPSHOT-standalone/start" method="post">
+Movie Name: <input id="movie" name="movie"></input> <br />
+Experiment to run:
+<input type="radio" value="random" id="experiment" name="experiment">Random</input>
+<input type="radio" value="evo" id="experiment" name="experiment">Evolutionary</input>
+<input type="radio" value="chunk" id="experiment" name="experiment">Chunk</input>
+<input type="radio" value="thematic" id="experiment" name="experiment">Thematic</input> <br />
+
+Title: <input id="title" name="title"></input> <br />
+Maximum Participants: <input id="max-part" name="max-part"></input> <br />
+Budget <input id="budget" name="budget"></input> <br />
+Time out (in hours):  <input id="timeout" name="timeout"></input> <br />
+Participants per Iteration: <input id="ppi" name="ppi"></input> <br />
+<input type="submit" action="submit" value="Start Experiment"></input>
+</form>
+<br />
+<br />
+<!-- <button onclick="flipSandbox();" value="Flip Sandbox">Flip Sandbox</button> -->
+</div>
+
+<script  type="text/javascript">
+if(getParameterByName("admin") !== "1") {
+  $("#admin").toggle();
+}
+
+setTimeout(function(){
+   window.location.reload(1);
+}, 30*60*1000); // minutes * seconds * milliseconds
+</script>
+</body>
+</html>
+<!-- function flipSandbox() { -->
+<!--   $.ajax({ -->
+<!--     "url": "https://nimbus.media.mit.edu/servlets/engage-1.0-SNAPSHOT-standalone/switchsandbox", -->
+<!--     "complete": function(datin, status) { -->
+<!--       if(datin.statusText === "OK") { -->
+<!--         console.log("Dat: " + datin.responseText); -->
+<!--         checksandbox(); -->
+<!--       } -->
+<!--     } -->
+<!--   } ); -->
+
+<!-- } -->

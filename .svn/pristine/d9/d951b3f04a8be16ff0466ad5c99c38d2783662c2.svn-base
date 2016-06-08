@@ -1,0 +1,46 @@
+<!DOCTYPE html> 
+<html> 
+<head>
+<title>Tell a Story!</title>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+</head>
+<body> 
+
+<center>
+	<h2> Watch the video. You'll be asked to tell a story about what happened in the video. Be as detailed as you want. </h2>
+</center>
+<div style="text-align:center"> 
+  <br> 
+  <video id	="video1" width="420" autoplay="0"  controls="true">
+    <source src="http://web.media.mit.edu/~ndepalma/turk/hs-demo.mp4" type="video/mp4">
+    Your browser does not support HTML5 video.
+  </video>
+</div>
+
+
+<center>
+	<a href="#disabled" id="nextstep">Next Step</a>
+</center>
+<script>
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+$(function() {
+	console.log("here: " + getParameterByName("assignId"));
+	if(getParameterByName("assignId") == "ASSIGNMENT_ID_NOT_AVAILABLE") {
+		$('#nextstep').on("click", function (e) {
+			e.preventDefault();
+		});
+	}
+	else {
+		$('#nextstep').attr("href", "videotell.html?hitId=" + getParameterByName("hitId") + "&assignID=" + getParameterByName("assignmentId"));
+	}
+});
+</script>
+</body> 
+
+</html>

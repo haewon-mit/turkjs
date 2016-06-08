@@ -1,0 +1,57 @@
+<!DOCTYPE html> 
+<html> 
+<head>
+<title>Help us build Robots!</title>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script> 
+</head>
+<body> 
+
+<center>
+	<h2> This is a test. Nick </h2>
+  <br> 
+  <table>
+	
+
+  <tr>
+  <td> There will be some instructions here. 
+  </td>
+  <td></td>
+</tr>
+  </table>
+
+</center>
+
+<center>
+	<a href="http://18.85.39.99/?action=mturk" id="nextstep">Next Step</a>
+  </center>
+  <script>
+ 
+  
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+$(function() {
+	console.log("here: " + getParameterByName("assignID"));
+	$('#anonid').attr("value", getParameterByName("assignID"));
+	$('#nextstep').attr("href", $('#nextstep').attr("href") + "?hitId=" + getParameterByName("hitId")+ "&assignID=" + getParameterByName("assignID"));
+	
+	//$('#storyform')
+	//	.ajaxForm({
+	//		url : 'http://localhost:8080', // or whatever
+	//		dataType : 'html',
+	//		success : function (response) {
+	//			console.log("Sent and returned: " + response);
+	//			//if(response['status'])
+	//			//	success = true;
+	//			//retry = retry -1 ;
+	//		}
+	//	});
+});
+</script>
+</body> 
+</html>

@@ -1,0 +1,67 @@
+<html>
+    <head>
+        <title>The Tangram Game</title>
+
+        <!-- Graphics and coding dependancies -->
+        <script type="text/javascript" src="./raphael-min.js"></script>
+        <script type="text/javascript" src="./jquery-1.9.1.js"></script>
+        <script type="text/javascript" src="./jquery-ui.js"></script>
+        <script type="text/javascript" src="./SAT.min.js"></script>
+
+        <!-- Define the types and the network layer -->
+        <script type="text/javascript" src="./shapes_colors_def.js"></script>
+        <script type="text/javascript" src="./skybox_network.js"></script>
+
+        <!-- UI defs for mouse -->
+        <script type="text/javascript" src="./mouse_defs.js"></script>
+        <script type="text/javascript" src="./game1.js"></script>
+
+        <!-- Define some global styles -->
+        <link rel="stylesheet" href="./jquery-ui.css">
+        <link rel="stylesheet" href="./style.css">
+
+
+        <!-- wPaint dependencies -->
+        <link rel="Stylesheet" type="text/css" href="./wPaint/lib/wColorPicker.min.css" />
+        <link rel="Stylesheet" type="text/css" href="./wPaint.css" />
+        <script type="text/javascript" src="./wPaint/lib/wColorPicker.min.js"></script>
+        <script type="text/javascript" src="./wPaint.js"></script>
+        <script type="text/javascript" src="./wPaint.utils.js"></script>
+        <script type="text/javascript" src="./wPaint/plugins/main/wPaint.menu.main.min.js"></script>
+        <script type="text/javascript" src="./wPaint/plugins/file/wPaint.menu.main.file.min.js"></script>
+
+        <!-- Must be defined before I load the network stuff  -->
+        <script type="text/javascript">
+          var can_select = true;
+          var can_move = false;
+          var can_ask = true;
+        </script>
+
+        <!-- local code for mouse/HTML interfacing -->
+        <script type="text/javascript" src="./reporter.js"></script>
+    </head>
+    <body>
+      <center><h1 id="title"> </h1></center>
+      <table border=0>
+        <tr>
+          <td><div id="canvas_container"></div></td>
+          <td><div id="pix_container"></div></td>
+          <td>
+            <div id="radioSelect" width="100%">
+              <h1>WHAT ARE YOU REPORTING?</h1>
+              <div id="radioReport" width="100%">
+                <input type="radio" id="radio1R" name='radioReport' value="0"><label for="radio1R"><h2>TANGRAM</h2></label>
+                <input type="radio" id="radio2R" name='radioReport' value="1"><label for="radio2R"><h2>DRAW</h2></label>
+              </div> <br />
+              <button id="clearButton"><h2>CLEAR DRAWING PAD</h2></button>
+            </div>
+            <div id="timer" style="color: black; font-size: 72;  background-color:green;">Ready...<br />HELLO!</div> <br />
+
+          </td>
+        </tr>
+      </table>
+      <center>
+        <button id="saveState">NEXT</button> <!-- either whole scene or locked/selected -->
+      </center>
+    </body>
+</html>

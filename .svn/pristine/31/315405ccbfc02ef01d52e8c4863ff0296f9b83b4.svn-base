@@ -1,0 +1,20 @@
+---
+layout: post
+title: Story 3
+date: 2015-09-27
+categories: narrative
+---
+
+<script>
+url1 = "{{site.baseurl}}{% post_url 2015-09-27-Narrative-1 %}";
+url2 = "{{site.baseurl}}{% post_url 2015-09-27-Narrative-2 %}";
+url3 = "{{site.baseurl}}{% post_url 2015-09-27-Narrative-3 %}";
+allurls = [url1, url2, url3];
+rint = Math.floor(Math.random()*3);
+url = allurls[rint];
+console.log("Hello: " + url);
+document.write("<a href=\""+url+"\">here</a>");
+</script>
+
+
+Pick Random

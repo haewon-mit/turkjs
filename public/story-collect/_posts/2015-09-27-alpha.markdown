@@ -1,0 +1,97 @@
+---
+layout: post
+title: Consent Page
+date: 2015-09-27
+categories: consent
+---
+
+<!-- 
+<script src={{ "/assets/js/jsCookie-1.4.min.js" | prepend: site.baseurl | prepend: site.url }}></script>
+<script src={{ "/assets/js/test.js" | prepend: site.baseurl | prepend: site.url }}></script>
+
+<center markdown="1">
+-->
+{:center: style="text-align: center"}
+
+# CONSENT TO PARTICIPATE IN NON-BIOMEDICAL RESEARCH
+{:center}
+
+Software Game Character Training Experiments
+{:center}
+
+
+<!-- 
+</center>
+-->
+
+You are asked to participate in a research study conducted by Cynthia Breazeal (Associate Professor), Jin Joo Lee (Ph.D. candidate) and Nick DePalma (Ph.D. candidate) at the Massachusetts Institute of Technology (M.I.T.). Results of this study will contribute to the Ph.D. thesis research of Jin Joo Lee and/or Nick DePalma  You were selected as a possible participant in this study because you have volunteered to label data online with our system and you are over the age of 18 and are eligible to consent. You should read the information below, and ask questions about anything you do not understand, before deciding whether or not to participate.
+
+## PARTICIPATION AND WITHDRAWAL
+
+Your participation in this study is completely voluntary and you are free to choose whether to be in it or not. If you choose to be in this study, you may subsequently withdraw from it at any time without penalty or consequences of any kind.  The investigator may withdraw you from this research if circumstances arise which warrant doing so. This may happen if foul language is used or if it is found that the participant is undermining the study through intentional deceit. 
+
+## PURPOSE OF THE STUDY
+
+We are investigating Machine Learning applications for software computer games.
+
+## PROCEDURES
+
+If you volunteer to participate in this study, we would ask you to do the following things:
+
+You will be asked to interact with a tangram game or scene in which a virtual robotic agent is jointly interacting. You will be able to communicate with the character through the use of the keyboard and the mouse. You will be told when the study ends and will then be asked a series of questions about your experience. In some cases, you will have the opportunity to voluntarily exit at any time but will still be required to fill out the questionnaire. The complete study is estimated to take less than one hour of your time.  
+
+## POTENTIAL RISKS AND DISCOMFORTS
+
+We are unaware of any potential risks in this experiment. To reiterate, you may exit at any time you feel discomfort and we would like to request that you report any discomfort immediately to one of the investigators through our contact information below.
+
+## POTENTIAL BENEFITS 
+
+Your participation will help us to build software agents and robots that are more responsive and sociable learning partners.
+
+## PAYMENT FOR PARTICIPATION
+
+Every participant will receive, $0.10 for doing the experiment. You can receive up to an additional $1 based on the quality of your response. 
+
+## CONFIDENTIALITY
+
+Any information that is obtained in connection with this study and that can be identified with you will remain confidential and will be disclosed only with your permission or as required by law. 
+
+While we do not record any identifying data from you, the participant, any information that is obtained in connection with this study will remain confidential and will be disclosed only with your permission or as required by law.
+
+Every participant's session with this online system is anonymized using globally unique identifiers in conjunction with unique identifiers that relate to the study itself. We never will ask for your name, address, or any identifying information. Data is stored in a database that we use to train our robots and will only be used to generate robotic behavior. Any other uses of the data will require further consent of the participant.
+
+## IDENTIFICATION OF INVESTIGATORS
+
+If you have any questions or concerns about the research, please feel free to contact:
+
+Nick DePalma (Ph.D. candidate) <BR />
+617 452 5603 <BR />
+MIT Media Lab <BR />
+E15-485 <BR />
+Cambridge, MA 02139 <BR />
+ndepalma@media.mit.edu <BR />
+
+Associate Professor, Cynthia Breazeal <BR />
+617 452 5601 <BR />
+MIT Media Lab <BR />
+E15-468 <BR />
+Cambridge, MA 02139 <BR />
+cynthiab@media.mit.edu <BR />
+
+## EMERGENCY CARE AND COMPENSATION FOR INJURY
+
+If you feel you have suffered an injury, which may include emotional trauma, as a result of participating in this study, please contact the person in charge of the study as soon as possible.
+
+In the event you suffer such an injury, M.I.T. may provide itself, or arrange for the provision of, emergency transport or medical treatment, including emergency treatment and follow-up care, as needed, or reimbursement for such medical services.  M.I.T. does not provide any other form of compensation for injury. In any case, neither the offer to provide medical assistance, nor the actual provision of medical services shall be considered an admission of fault or acceptance of liability. Questions regarding this policy may be directed to MIT’s Insurance Office, (617) 253-2823. Your insurance carrier may be billed for the cost of emergency transport or medical treatment, if such services are determined not to be directly related to your participation in this study.
+
+## RIGHTS OF RESEARCH SUBJECTS
+
+You are not waiving any legal claims, rights or remedies because of your participation in this research study.  If you feel you have been treated unfairly, or you have questions regarding your rights as a research subject, you may contact the Chairman of the Committee on the Use of Humans as Experimental Subjects, M.I.T., Room E25-143B, 77 Massachusetts Ave, Cambridge, MA 02139, phone 1-617-253 6787.
+
+# RESEARCH SUBJECT AGREEMENT
+
+I understand the procedures described above. By clicking on the *Agree* Button below, you are agreeing that you are of legal age to consent (18 years or older) and that you agree to the above terms.
+
+| [Agree]({{site.baseurl}}{% post_url 2015-09-27-Pick-Rand %}){: #agreeBut} | [Leave Immediately](http://www.google.com){: #declineBut} |
+
+

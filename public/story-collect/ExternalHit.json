@@ -1,0 +1,16 @@
+  {
+    "title": "Watch a short video and answer a few short questions.",
+    "description": "You will watch a short video and answer just a few short questions about what you saw",
+    "reward": 0.50,
+    "assignments": 30,
+    "duration": "5 min",
+    "keywords": ["shapes", "video", "psychology"],
+    "lifetime": "7 d",
+    "approval_delay": "14 d",
+    "qualifications": [
+        "PercentAssignmentsApproved > 90",
+        "Locale == US"
+    ],
+    "question_url": "https://nimbus.media.mit.edu/story//narrative/2015/09/27/Narrative-1.html",
+    "question_frame_height": 550
+  }

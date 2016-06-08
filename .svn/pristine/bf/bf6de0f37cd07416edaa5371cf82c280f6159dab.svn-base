@@ -1,0 +1,269 @@
+---
+layout: post
+title: Story Experiment 2
+date: 2015-09-27
+categories: inter
+---
+
+<!-- <link rel="stylesheet" href="{{ '/assets/css/annotation.css' | prepend: site.baseurl | prepend: site.url }}"> -->
+<!-- <link rel="stylesheet" href="{{ '/assets/css/style.css' | prepend: site.baseurl | prepend: site.url }}"> -->
+<script src="{{ "assets/js/jquery-1.12.3.min.js" | prepend: site.baseurl | prepend: site.url }}"></script>
+<script src="{{ "assets/js/jquery-ui.min.js" | prepend: site.baseurl | prepend: site.url }}"></script>
+<style>
+div#videoContainer{
+    position: relative;
+  }
+canvas#overlay {
+//    background: red;
+    font-weight: bold;
+    opacity: 1.0;
+    padding: 0em;
+    position: absolute;
+    z-index: 1;
+    text-align: left;
+    margin: 0%;
+//    width: 356px;
+//    height: 279px;
+//    width: 420px;
+//    height: 236px;
+  }
+
+:not(.highlight) .controls {
+    padding:0; /*replaces table attribute cellpadding */
+    border-collapse: collapse; /*replaces table attribute cellspacing*/
+    border-style: none; /*replaces table attribute border */
+    border-width: 0px;
+    border-color: black;
+}
+
+:not(.highlight) .controls td {
+    text-align:left; /*replaces td attribute align */
+    border: 0px solid grey;
+}
+</style>
+# Identify moments in time: 
+
+This study is seeking to understand when people declare or attribute an event to a moment in time.
+
+<div style="vertical-align:top;border: 2px dotted; border-radius:10px; width: 100%; text-align:left; font-size: 100%" markdown="1">
+We have selected a small number of events that occur in the video (middle box).
+	
+* Read the events that can occur in the middle. Keep them in mind.
+* Watch the video. When an event occurs,
+..* Select the actors involved on the left and right.
+..* Some moments in time only occur with one actor (i.e. a shape becomes aggressive or scared) in which case, only one actor is relevant.
+* Seek to the moment in time that the event happens and click "Add" button.
+* Do this for as many events as you can find.
+* If you make a mistake, you can select the event in the list and click the "Remove" button. Click "Finished" when done.
+</div>
+
+<br />
+<br />
+<br />
+
+-------------
+<br />
+
+<div id="videoContainer">
+  <center>
+  <canvas id="overlay" onmousedown="mdownline()" onmouseup="mupline()" onmousemove="mmove()"></canvas>
+  <video id="video1" width="420" autoplay="1"  ontimeupdate="getFrameNum()"  onplay="playevt()" onpause="pausevt()" onend="endevt()">
+    <source src="{{ '/assets/vids/black.g1.webm' | prepend: site.baseurl | prepend: site.url }}" type="video/webm">
+    Your browser does not support HTML5 video.
+  </video>
+ <table width="420" class="controls">
+    <tr>
+      <td width="25"><img id="playwidget" src="{{ "assets/imgs/pause1-150x150.png" | prepend: site.baseurl | prepend: site.url }}" onclick="playPause()" width="25" height="25" /> </td>
+      <td><div id="slide1"></div> </td>
+    </tr>
+  </table>
+  </center>
+</div>
+  
+
+  <!-- <p> -->
+  <button onclick="startMark()">Start Mark</button>
+  <label for="amount">Time Step:</label>
+  <input type="text" id="amount" width="60px" style="border: 0; color: #f6931f; font-weight: bold; width:" />
+  <button onclick="endMark()">End Mark</button>
+  <!-- </p> -->
+  <!-- <center> -->
+  <!-- <button onclick="resetMark()">Reset Mark</button> -->
+  <!-- </center> -->
+
+
+
+<script>
+var dataout = [];
+var myVideo=document.getElementById("video1");
+var tid2 = setTimeout(init, 200);
+var aspect = 279/356;
+var anchors_url = "{{ "/anchorsat" | prepend: site.servleturl }}";
+var ldrawing = false;
+var apos = [];
+
+function drawanchor(x, y) {
+  var c=document.getElementById('overlay');
+  var ctx=c.getContext("2d");
+
+  var circlewidth = 13;
+  var circlegap = 5;
+  var p = 100;
+//  var p = 17;
+  var ccx = x;
+  var ccy = y*aspect;
+  
+  // Fill with gradient
+  ctx.setTransform(1.0,0,0,aspect,0,0);
+  var grd=ctx.createRadialGradient(ccx,ccy,circlewidth-circlegap,ccx,ccy,circlewidth );
+  grd.addColorStop(0, "rgba(255,0,0,0.6)");
+  grd.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle=grd;
+  ctx.fillRect(ccx-circlewidth,ccy-circlewidth,2*circlewidth, circlewidth*2);
+//  console.log("Drawing" + ctx);
+}
+
+function clearall() {
+  var c=document.getElementById('overlay');
+  var ctx=c.getContext("2d");
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+}
+
+function drawAnchors(data_in, successText) {
+   var vwidth = myVideo.videoWidth;
+   var vheight = myVideo.videoHeight;
+   
+   var width = myVideo.width;
+   var height = vheight/vwidth*width;
+
+  var t = Math.floor(myVideo.currentTime *20)
+  //console.log("anchs " + data_in);
+  data_in = $.parseJSON(data_in);
+  if(t === data_in["t"] && myVideo.paused) {
+    console.log("valid anchors.. draw them!");
+    apos = [];
+    // for each anchor...
+    for(i = 0;i < data_in["anchors"].length;i++) {
+       var x = data_in["anchors"][i][0] * width;
+       var y = data_in["anchors"][i][1] * height;
+       drawanchor(x, y);
+       apos.push( [x, y]);
+    }
+  }
+}
+
+
+function mupline() {
+  if(ldrawing) {
+    console.log("up");
+  }
+  ldrawing = false;
+}
+
+function mdownline() {
+  if(myVideo.paused) {
+   console.log("down");
+   ldrawing = true;
+  }
+}
+
+function mmove() {
+  if(ldrawing) {
+    var off = $("#overlay").offset();
+    var mx = event.pageX - off.left;
+    var my =  event.pageY - off.top;
+    console.log("move " + mx + " " + my);
+  }
+}
+
+
+function playevt() {
+  console.log("play event");
+  clearall();
+}
+
+function pausevt() {
+  console.log("pause event");
+  var t = Math.floor(myVideo.currentTime *20)
+  $.post(anchors_url, {"t": t},drawAnchors);
+}
+
+function endevt() {
+  console.log("end event");
+}
+
+
+function getFrameNum() {
+  var t = Math.floor(myVideo.currentTime *20)
+  $( "#amount" ).val( "" + t);
+  $( "#slide1" ).slider( "value", t );
+}
+
+function playPause()
+{
+  console.log("At least triggered");
+  if (myVideo.paused) {
+    myVideo.play();
+    document.getElementById("playwidget").src="{{ "assets/imgs/pause1-150x150.png" | prepend: site.baseurl | prepend: site.url }}";
+  } else {
+    myVideo.pause();
+    document.getElementById("playwidget").src="{{ "assets/imgs/play1-150x150.png" | prepend: site.baseurl | prepend: site.url }}";
+  }
+}
+
+function seek(event, ui) {
+	var vl_frac = $( "#slide1" ).slider( "value" ) / $( "#slide1" ).slider( "option", "max" );
+	var vid_dur = myVideo.duration; // in secs
+	var timePos = vl_frac*vid_dur;
+	//set video position
+	myVideo.currentTime = timePos;
+}
+
+$(function() {
+  $(document).ready(function() {
+    $('#slide1').slider({
+                 slide: seek,
+                 start: pausevt,
+                 stop: playevt,
+                 min: 0,
+                 max: 100,
+                 values: 0});
+  });
+  $( "#amount" ).val( "0.0");
+});
+
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function initVideo() {
+   var vwidth = myVideo.videoWidth;
+   var vheight = myVideo.videoHeight;
+   
+   var width = myVideo.width;
+   var height = vheight/vwidth*width;
+   
+   //aspect = height/width;
+   aspect = 1;
+   
+   $("#overlay").attr("width", width);
+   $("#overlay").attr("height", height);
+}
+
+function init() {
+	var dur = Math.floor(myVideo.duration*20);
+	console.log("movie duration: " + dur);
+        $( "#slide1" ).slider( "option", "max",  dur);
+        $( "#slide1" ).slider( "enable" );
+        initVideo();
+};
+
+
+function gethandleMark() {
+	return 420*myVideo.currentTime/myVideo.duration;
+}
+
+</script>

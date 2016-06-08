@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+.slide {
+	width: 420px;
+    background: white;
+}
+.slide-back {
+    position:absolute;
+    height:100%;
+}
+
+span.normal {
+}
+span.highlighted {
+	color:red;
+	background:rgb(200,255,200);;
+}
+span.over {
+	color:darkgray;
+}
+#innerblock {
+    display: inline-block;
+}
+</style>
+
+<title>Help me find when things happen!</title>
+<script src="jquery-1.9.1.js"></script>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<center>
+	<h1> Identify moments in time: <br /> This study is seeking to understand when people declare or attribute an event to a moment in time. </h1>
+	<div style="vertical-align:top;border: 2px dotted; border-radius:10px; width: 50%; text-align:left; font-size: 175%">
+	We have selected a small number of events that occur in the video (middle box).
+	<ul>
+	<li> Read the events that can occur in the middle. Keep them in mind.
+	<li> Watch the video. When an event occurs,
+	<li>
+		<ul>
+		    <li> Select the actors involved on the left and right.
+		    <li> Some moments in time only occur with one actor (i.e. a shape becomes aggressive or scared) in which case, only one actor is relevant.
+		</ul>
+	<li>Seek to the moment in time that the event happens and click "Add" button.
+	<li>Do this for as many events as you can find.
+	<li> If you make a mistake, you can select the event in the list and click the "Remove" button. Click "Finished" when done.
+	</ul>
+
+	</div>
+
+<table>
+<tr>
+<td>
+
+<div s>
+  <br>
+  <video id="video1" width="420" autoplay="0"  ontimeupdate="getFrameNum()" controls="true">
+   <!--  <source src="hs2.mp4"> -->
+   <source src="hs-demo.mp4">
+
+    Your browser does not support HTML5 video.
+  </video>
+</div>
+
+
+
+
+  <p>
+  <label for="amount">Time Step:</label>
+  <input type="text" id="amount" width="60px" style="border: 0; color: #f6931f; font-weight: bold; width:" />
+  </p>
+</td>
+
+<td style="vertical-align:top;border: 2px solid; border-radius:10px;padding:20px 25px; font-size:150%" width="65%" id="textblock">
+<table>
+<tr> <td style="vertical-align:top">
+<select name="param1" size=5 style="vertical-align:top" id="param1">
+  <option value="little-triangle">little triangle</option>
+  <option value="big-triangle">big triangle</option>
+  <option value="circle">circle</option>
+  <option value="rectangle">rectangle</option>
+  <option value="door">door</option>
+</select>
+</td><td>
+<select name="action" size=8 id="action" onchange="actionchanged()">
+  <option value="avoid">avoids</option>
+  <option value="break">breaks</option>
+  <option value="agent-in">agent enters</option>
+  <option value="no-escape">can't escape</option>
+  <option value="follow">follows</option>
+  <option value="apply-aggressive">becomes aggressive</option>
+  <option value="apply-scared">becomes scared</option>
+  <option value="open">open</option>
+</select>
+</td><td>
+<table style="height:100%;">
+<tr> <td style="vertical-align:top">
+<select name="param2" size=5 id="param2" disabled="true">
+  <option value="little-triangle">little triangle</option>
+  <option value="big-triangle">big triangle</option>
+  <option value="circle">circle</option>
+  <option value="rectangle">rectangle</option>
+  <option value="door">door</option>
+</select>
+</td></tr>
+<tr> <td>
+<button onclick="addselected()" style="vertical-align:bottom">Add</button>
+</td></tr>
+</table>
+</tr>
+</table>
+<table height="100%"><tr><td>
+<div id="innerblock" style="height:200px; width=100%;">
+
+<!-- <span class="normal">This is a sentence of not attended to. </span>
+<span class="highlighted">This is a sentence attended to.</span>
+<span class="over">This is a sentence mouse-overed.</span> -->
+
+</div>
+</td></tr></table>
+<div >
+<button onclick="removeselected()" style="vertical-align:bottom">Remove</button>
+</div>
+
+</td>
+</tr>
+</table>
+
+<br/>
+<!-- http://www.google.com -->
+<h1><a href="#foo" onclick="submitData()" id="exitref" disabled="true">Finished</a></h1>
+</center>
+<script>
+
+var dataout =[["circle_apply-scared",1993.6333200000001],["circle_apply-scared",1993.6333200000001],["big-triangle_open_door",349.85836],["little-triangle_apply-aggressive",402.36324],["big-triangle_apply-aggressive",506.01930000000004],["big-triangle_apply-aggressive",633.50618],["big-triangle_open_door",1011.55484],["circle_no-escape",1374.02846],["little-triangle_open_door",1423.06642],["circle_apply-scared",1468.39136],["big-triangle_no-escape",1573.605],["big-triangle_open_door",1613.27168],["big-triangle_open_door",1905.3231],["big-triangle_apply-aggressive",1941.3212999999998],["door_follow_little-triangle",674.2892],["big-triangle_apply-aggressive",1107.8437800000002],["circle_avoid_big-triangle",1409.9444399999998],["big-triangle_follow_circle",1930.7409400000001],["big-triangle_follow_circle",1993.6653000000001],["little-triangle_apply-aggressive",398.99272],["big-triangle_apply-aggressive",500.43882],["circle_apply-scared",665.1334199999999],["little-triangle_apply-scared",882.85342],["circle_agent-in_rectangle",929.94992],["big-triangle_agent-in_rectangle",1123.7385],["circle_no-escape",1310.3527800000002],["little-triangle_open_door",1401.64526],["circle_follow_little-triangle",1513.52544],["big-triangle_no-escape",1534.16924],["big-triangle_apply-aggressive",1628.8886],["big-triangle_follow_circle",1633.1971999999998],["big-triangle_agent-in_rectangle",1702.7661],["big-triangle_break_door",1905.92266],["big-triangle_break_rectangle",1933.77756],["little-triangle_no-escape",308.84682000000004],["big-triangle_apply-aggressive",524.8124],["circle_avoid_big-triangle",794.43608],["big-triangle_apply-aggressive",911.70124],["circle_no-escape",1069.28814],["big-triangle_follow_circle",1194.4280999999999],["little-triangle_follow_big-triangle",1501.0593],["big-triangle_follow_little-triangle",1710.13888],["big-triangle_break_door",1985.67974],["big-triangle_no-escape",341.25716],["big-triangle_apply-aggressive",391.34678],["little-triangle_apply-scared",687.82012],["circle_apply-scared",1032.30108],["big-triangle_break_door",1943.4683799999998],["big-triangle_break_rectangle",1943.4683799999998],["big-triangle_break_little-triangle",0],["circle_follow_circle",0],["rectangle_open_door",0],["little-triangle_avoid_big-triangle",0],["door_no-escape",0],["circle_apply-aggressive",10.436119999999999],["circle_apply-aggressive",10.436119999999999],["big-triangle_break_door",443.28496],["big-triangle_follow_little-triangle",635.14178],["little-triangle_no-escape",864.87934],["big-triangle_break_rectangle",1225.79744],["circle_no-escape",1385.1063199999999],["big-triangle_follow_circle",1840.19744],["rectangle_break_rectangle",1993.6653000000001],["little-triangle_follow_little-triangle",608.84324],["little-triangle_apply-scared",855.22696],["circle_avoid_big-triangle",1085.2966999999999],["circle_no-escape",1319.43386],["little-triangle_agent-in_rectangle",1485.1843199999998],["big-triangle_apply-aggressive",1811.4647],["little-triangle_follow_little-triangle",581.2315],["circle_avoid_big-triangle",876.0727199999999],["big-triangle_follow_circle",916.07104],["big-triangle_break_door",1065.91194],["big-triangle_open_door",1052.88878],["big-triangle_open_door",1655.4866000000002],["circle_apply-aggressive",1283.9199800000001],["circle_no-escape",1656.25998],["little-triangle_no-escape",1875.8999800000001],["big-triangle_open_door",600.68406],["circle_apply-scared",942.12958],["big-triangle_apply-aggressive",1066.06414],["big-triangle_apply-aggressive",909.04946],["big-triangle_break_door",1289.0157199999999],["little-triangle_open_door",1563.05118],["big-triangle_break_door",1712.41548],["little-triangle_apply-scared",1991.5393399999998],["big-triangle_no-escape",1993.6653000000001],["big-triangle_no-escape",498.06406000000004],["big-triangle_apply-aggressive",738.97498],["little-triangle_no-escape",898.9926800000001],["big-triangle_agent-in_rectangle",1226.30184],["circle_apply-scared",1362.2063600000001],["circle_follow_little-triangle",1852.6162199999999],["big-triangle_break_door",1993.6653000000001],["little-triangle_follow_circle",1993.6653000000001],["big-triangle_apply-aggressive",1993.6653000000001],["big-triangle_follow_little-triangle",1993.6653000000001],["big-triangle_no-escape",290.82986],["big-triangle_break_door",373.52016],["little-triangle_apply-aggressive",412.70968000000005],["big-triangle_apply-scared",507.08764],["big-triangle_avoid_little-triangle",553.53974],["circle_avoid_big-triangle",870.27446],["circle_agent-in_door",581.2193],["circle_agent-in_rectangle",907.90352],["big-triangle_follow_circle",1097.2134],["little-triangle_open_door",1408.87246],["circle_follow_little-triangle",1529.74842],["big-triangle_no-escape",1559.68216],["big-triangle_open_door",1627.0473000000002],["big-triangle_break_rectangle",1925.23876],["door_apply-aggressive",240.09816],["big-triangle_no-escape",240.09816],["little-triangle_apply-scared",293.94792],["circle_follow_little-triangle",293.94792],["big-triangle_break_door",358.89884],["big-triangle_follow_little-triangle",395.2165],["little-triangle_apply-aggressive",419.69687999999996],["big-triangle_apply-aggressive",503.58817999999997],["big-triangle_apply-aggressive",715.41596],["little-triangle_no-escape",775.9472800000001],["circle_avoid_big-triangle",865.78356],["circle_agent-in_door",958.27844],["circle_avoid_big-triangle",1030.06756],["big-triangle_open_door",1030.06756],["big-triangle_agent-in_rectangle",1108.31386],["circle_apply-scared",1378.80084],["circle_avoid_big-triangle",1481.7847000000002],["little-triangle_open_door",1481.7847000000002],["circle_avoid_big-triangle",1524.9410599999999],["circle_follow_little-triangle",1524.9410599999999],["big-triangle_no-escape",1547.61168],["big-triangle_break_door",1619.1563999999998],["little-triangle_apply-scared",1631.91462],["circle_apply-scared",1631.91462],["little-triangle_avoid_big-triangle",1649.78124],["circle_avoid_big-triangle",1649.78124],["big-triangle_follow_little-triangle",1707.6062],["big-triangle_follow_big-triangle",1707.6062],["big-triangle_open_door",1899.68974],["big-triangle_break_door",1936.9411],["big-triangle_break_rectangle",1936.9411],["little-triangle_break_big-triangle",1993.6653137207031],["little-triangle_break_rectangle",521.56506],["big-triangle_open_door",603.46264],["circle_agent-in_door",1245.9827599999999],["big-triangle_agent-in_door",1395.05486],["little-triangle_apply-aggressive",1726.63582],["big-triangle_no-escape",1726.63582],["big-triangle_open_door",1900.1176799999998],["big-triangle_break_rectangle",1993.6653000000001],["big-triangle_apply-aggressive",1886.10274],["big-triangle_apply-aggressive",1993.6653000000001],["little-triangle_follow_door",246.66684],["circle_no-escape",1463.8541599999999],["big-triangle_no-escape",1613.93508],["big-triangle_apply-aggressive",966.48274],["big-triangle_apply-aggressive",1065.63194]];
+
+<!-- var dataout = []; -->
+var myVideo=document.getElementById("video1");
+//var tid = setInterval(getFrameNum, 1000/20);
+var tid2 = setTimeout(init, 200);
+var seled = "";
+var aritymap = {
+	'avoid' : 2,
+	'break': 2,
+	'agent-in': 2,
+	'no-escape': 1,
+	'follow': 2,
+	'apply-aggressive': 1,
+	'apply-scared': 1,
+	'open': 2};
+
+function serializedataout() {
+	var tout = {};
+	var myJSONText = JSON.stringify(dataout);
+
+	tout["id"] = getParameterByName("assignmentId");
+	tout["events"] = myJSONText;
+	return tout;
+}
+
+function actionchanged() {
+	var actionval = $('#action').val();
+	var arity = aritymap[actionval];
+	console.log('act: ' + actionval + " with arity: " + arity);
+	if(arity === 1) {
+		document.getElementById("param2").disabled=true;
+	}  else {
+		document.getElementById("param2").disabled=false;
+	}
+}
+
+function submitData() {
+	console.log('Clicked finished');
+	$.ajax({
+		type: "POST",
+		url: "events",
+		data: serializedataout(),
+		success: function(data){
+			console.log("Received: " + data['status']); // John
+		},
+		async: false,
+		dataType: "json"
+	});
+}
+
+
+$(function() {
+	//$( "#exitref").attr("href", "http://workersandbox.mturk.com/mturk/externalSubmit?jobid="+getParameterByName("assignmentId")+"&assignmentId=" + getParameterByName("assignmentId"));
+	$( "#exitref").attr("href", "http://www.mturk.com/mturk/externalSubmit?jobid="+getParameterByName("assignmentId")+"&assignmentId=" + getParameterByName("assignmentId"));
+	$( "#amount" ).val( "0.0");
+});
+
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function addselected() {
+	var actionval = $('#action').val();
+	var param1val = $('#param1').val();
+	var param2val = $('#param2').val();
+	if(actionval != null && param1val != null) {
+		console.log("valid1");
+		var arity = aritymap[actionval];
+		if(arity == 2  && param2val == null) {
+			console.log("aborting");
+			return 0; // abort mission
+		}
+		console.log("valid");
+		var actionout = param1val + '_' + actionval;
+		var time = myVideo.currentTime*20;
+		if(arity == 2 ) {
+			actionout = actionout + '_' + param2val;
+		}
+
+		dataout.push([actionout, time]);
+		updateeventlist();
+	}
+}
+
+function removeselected() {
+	console.log('seled: ' + seled);
+	var ind = eval(seled.substring(1));
+	dataout2 = dataout.splice(ind, 1);
+	if(typeof(dataout2) === 'undefined') {
+		dataout = [];
+	}
+	seled = "";
+	updateeventlist();
+}
+
+function alignsel(elename) {
+	if(seled != elename) {
+		//context switch
+		$('#'+seled).attr('class', 'normal');
+		$('#'+elename).attr('class', 'highlighted');
+		seled = elename;
+	}
+
+}
+
+function onmover(elename) {
+	if(seled.length == 0 || seled != elename)
+		$('#'+elename).attr('class', 'over');
+}
+
+function onmovout(elename) {
+	if(seled.length == 0 || seled != elename)
+		$('#'+elename).attr('class', 'normal');
+}
+
+function clearblock() {
+	var ele = document.getElementById("innerblock");
+	while(ele.hasChildNodes()) {
+		ele.removeChild(ele.firstChild);
+	}
+}
+var sentmap = {
+	'avoid' : 'avoids the',
+	'break': 'breaks the',
+	'agent-in': 'enters the',
+	'no-escape': "can't escape!",
+	'follow': "follows the",
+	'apply-aggressive': 'becomes aggressive.',
+	'apply-scared': 'becomes scared.',
+	'open': 'opens the'};
+
+function constructsent(val) {
+	var paramvec = val.split('_');
+	var sentout = "The " + paramvec[0].split('-').join(" ") + " " + sentmap[paramvec[1]];
+
+	if(paramvec.length === 3) {
+		sentout = sentout + " " + paramvec[2].split('-').join(" ")  + ".";
+	}
+	return sentout;
+}
+function updateeventlist() {
+	var time = myVideo.currentTime*20;
+	var thresh = 50;
+	var ele = document.getElementById("innerblock");
+	clearblock();
+	for ( var i = 0;i < dataout.length;i++) {
+		if(dataout[i][1] <= time &&
+			(time - dataout[i][1])  < thresh) {
+
+				var itsname = "s"+i;
+
+				//var para=document.createElement("span");
+				//para.appendChild(document.createTextNode('mofo'));
+				//ele.appendChild(para);
+
+				$('#innerblock').append('<span class="normal" onMouseOver="onmover(\''+itsname+'\')" '+
+					'onmouseout="onmovout(\''+itsname+'\')" ' +
+					'onclick="alignsel(\''+itsname+'\')" ' +
+					'id="'+itsname+'">'+constructsent(dataout[i][0]) +'</span> <br />');
+
+		}
+	}
+}
+
+function getFrameNum() {
+  var t = Math.floor(myVideo.currentTime *20)
+  $( "#amount" ).val( "" + t);
+  updateeventlist();
+}
+function abortTimer() { // to be called when you want to stop the timer
+  clearInterval(tid);
+}
+function init() {
+	var dur = Math.floor(myVideo.duration*20);
+	console.log("hello" + dur);
+};
+
+
+function gethandleMark() {
+	return 420*myVideo.currentTime/myVideo.duration;
+}
+
+</script>
+</body>
+</html>

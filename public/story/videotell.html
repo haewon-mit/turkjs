@@ -1,0 +1,85 @@
+<!DOCTYPE html> 
+<html> 
+<head>
+<title>Tell a Story!</title>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script> 
+</head>
+<body> 
+
+<center>
+	<h2> Watch the video. You are being asked to tell a story about what happened in the video. Pretend you are retelling this story to a friend and narrate what happens. </h2>
+  <br> 
+  <table>
+	
+
+  <tr>
+  <td> <div style="text-align:center"> 
+  		<video id="video1" width="420" autoplay="0"  controls="true">
+    		<source src="http://web.media.mit.edu/~ndepalma/turk/hs-demo.mp4" type="video/mp4">
+		    Your browser does not support HTML5 video.
+	   </video>
+	   </div>	
+  </td>
+  <td><form method="post" action="http://127.0.0.1:8080" name="storyform" id="storyform">
+  <textarea name="rawstory" cols="50" rows="22"></textarea> 
+  <input type="hidden" name="id" id="anonid" value=""></form>
+  </td>
+  </tr>
+  </table>
+
+</center>
+<script>
+  function formprocess() {
+	var success = false;
+	console.log("Entering form process");
+		$.ajax({
+			type: "POST",
+			url: "story",
+			data: $('#storyform').serialize(),
+			success: function(data){
+				if(data['status'] != 500) {
+					console.log("Received: " + data['status']); // John
+					success = true;
+				}
+			},
+			async: false,
+			dataType: "json"
+		});
+
+	return false;
+  }
+  </script>
+<center>
+	<a href="videoAnnotate.html" onclick="formprocess();"  id="nextstep">Next Step</a>
+  </center>
+  <script>
+ 
+  
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+$(function() {
+	console.log("here: " + getParameterByName("assignID"));
+	$('#anonid').attr("value", getParameterByName("assignID"));
+	$('#nextstep').attr("href", $('#nextstep').attr("href") + "?hitId=" + getParameterByName("hitId")+ "&assignID=" + getParameterByName("assignID"));
+	
+	//$('#storyform')
+	//	.ajaxForm({
+	//		url : 'http://localhost:8080', // or whatever
+	//		dataType : 'html',
+	//		success : function (response) {
+	//			console.log("Sent and returned: " + response);
+	//			//if(response['status'])
+	//			//	success = true;
+	//			//retry = retry -1 ;
+	//		}
+	//	});
+});
+</script>
+</body> 
+</html>

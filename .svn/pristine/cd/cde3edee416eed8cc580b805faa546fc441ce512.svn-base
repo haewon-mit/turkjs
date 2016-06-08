@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <title>The Tangram Game</title>
+        <style>
+            body {
+                background: #333;
+                color: #fff;
+                font: 300 100.1% "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
+            } // top left is 62,62, bottom right is 861, 1061
+            #canvas_container {
+                width: 800px;
+                border: 1px solid #aaa;
+                margin-right: 300px;
+                margin-left: 50px;
+                margin-top: 50px;
+                height: 1000px;
+            }
+            #pix_container {
+                position: fixed;
+                background: url(frame0001.jpg) no-repeat;
+                background-size: 100%;
+                width: 800px;
+                border: 0px solid #aaa;
+                margin-right: 000px;
+                margin-left: 00px;
+                margin-top: 00px;
+                height: 1000px;
+                left: 62px;
+                top: 62px;
+                opacity: 0.2;
+                filter: alpha(opacity=20); /* For IE8 and earlier */
+            }
+        </style>
+
+        <!-- Graphics and coding dependancies -->
+        <script type="text/javascript" src="./raphael-min.js"></script>
+        <script type="text/javascript" src="./jquery-1.9.1.js"></script>
+        <script type="text/javascript" src="./jquery-ui.js"></script>
+        <script type="text/javascript" src="./SAT.min.js"></script>
+
+        <script type="text/javascript">
+          var can_select = true;
+          var can_move = false;
+        </script>
+
+        <!-- Define the types and the network layer -->
+        <script type="text/javascript" src="./shapes_colors_def.js"></script>
+        <script type="text/javascript" src="./skybox_network.js"></script>
+
+        <!-- UI defs for mouse -->
+        <script type="text/javascript" src="./mouse_defs.js"></script>
+
+        <script type="text/javascript" src="./game1.js"></script>
+
+        <!-- Define some global styles -->
+        <link rel="stylesheet" href="./jquery-ui.css">
+        <link rel="stylesheet" href="./style.css">
+
+        <!-- local code for mouse/HTML interfacing -->
+        <script type="text/javascript">
+          var cur_version = 1.0
+
+          document.onmousemove = function(e)
+{
+    var x = e.pageX;
+    var y = e.pageY;
+    // do what you want with x and y
+          console.log("X: " + x + " and Y: " + y);
+};
+          function set_image(im) {
+             $("#pix_container").css("background-image", "url("+ im  + ")");
+          }
+
+          function catch_image_handler(fileblob) {
+             if ( fileblob.files && fileblob.files[0] ) {
+                var FR= new FileReader();
+                FR.onload = function(e) {
+                  set_image(e.target.result);
+                };
+                FR.readAsDataURL( fileblob.files[0] );
+             } else {
+                console.log("ERROR - nothing in files: " + im);
+             }
+          }
+
+          // Still working on collision detection for ALL shapes
+          window.onload = function() {
+
+          // Initialize Raphael
+          window.paper = new Raphael(document.getElementById('canvas_container'), 1000, 1000);
+
+
+          // For all the buttons, cancel the default behavior
+          $( "input[type=submit], a, button" ).button().click(function( event ) {
+          event.preventDefault();
+          });
+
+
+          function next_level(selected_list) {
+
+     	     //Turn them all into a JSON object
+             var jsonvers = JSON.stringify(selected_list);
+
+  	    //SHIP IT OFF
+            $.post("http://"+global_host+"next", {data: jsonvers}, function( data ) {
+                console.log("Ping back!");
+            }, "json");
+
+            //
+          }
+
+          $("#picker").change(function(){
+              catch_image_handler( this );
+          });
+
+
+          $("#saveState").click(function() {
+             console.log("NEXT");
+             // iterate through all shapes and find which ones are selected
+             var i = 0;
+             var tosend = [];
+             for (i = 0 ; i < allshapes.length;i++) {
+                  var shape = allshapes[i];
+                  if(shape.selected) {
+                    tosend.push(i);
+                  }
+             }
+             //if(tosend.length > 0)
+                next_level(tosend);
+             // disable the savestate button, reset the stage
+             //$("#saveState").prop("disabled",true);
+             clearFrame();
+          });
+
+          // Initialize the Network layer
+          initNetworkOS(true);
+          }
+	   </script>
+
+    </head>
+    <body>
+      <center><h1 id="title"> </h1></center>
+      <table border=0>
+        <tr>
+          <td><div id="canvas_container"></div></td>
+          <td><div id="pix_container"></div></td>
+          <td><div id="timer" style="color: black; font-size: 72;  background-color:green;">Ready...<br />HELLO!</div></td>
+        </tr>
+      </table>
+      <center>
+        <button id="saveState">NEXT</button> <!-- either whole scene or locked/selected -->
+        <input id="picker" type='file'>
+      </center>
+    </body>
+</html>
